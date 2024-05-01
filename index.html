@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MET calculator</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .final-score {
+            font-family: monospace;
+            color: greenyellow;
+            font-size: xx-large;
+        }
+
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            margin-top: 56px;
+            /* Adjusted for navbar height */
+        }
+
+        .navbar {
+            background-color: #343a40;
+        }
+
+        .navbar-dark .navbar-nav .nav-link {
+            color: rgba(255, 255, 255, .5);
+        }
+
+        .navbar-dark .navbar-nav .nav-link:hover {
+            color: rgba(255, 255, 255, .75);
+        }
+
+        .navbar-dark .navbar-brand {
+            color: #ffffff;
+        }
+
+        .navbar-dark .navbar-brand:hover {
+            color: rgba(255, 255, 255, .75);
+        }
+
+        /* Adjust container alignment */
+        .container {
+            margin-left: 0;
+            padding-left: 0;
+        }
+
+        /* Center align the content */
+        .content-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            /* Adjusted */
+            min-height: 80vh;
+            /* Adjust height as needed */
+            margin-top: 20px;
+            /* Adjusted */
+        }
+
+        /* Dark theme for cards */
+        .card {
+            background-color: #343a40;
+            color: #ffffff;
+            margin: 20px 15px;
+            /* Adjusted */
+        }
+
+        .card-title {
+            color: #ffffff;
+        }
+
+        /* Button style */
+        .calculate-btn {
+            background-color: #007bff;
+            color: #ffffff;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">MET calculator</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </nav>
+
+    <div class="container-fluid content-container">
+        <div class="row">
+            <div class="col-md-5">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Board Marks</h5>
+                        <div class="form-group">
+                            <input type="number" class="form-control" placeholder="Maths(out of 100)" id="maths">
+                        </div>
+                        <div class="form-group">
+                            <input type="number" class="form-control" placeholder="Physics(out of 100)" id="physics">
+                        </div>
+                        <div class="form-group">
+                            <input type="number" class="form-control" placeholder="Chemistry(out of 100)"
+                                id="chemistry">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Met Marks</h5>
+                        <div class="form-group">
+                            <input type="number" class="form-control" placeholder="MET Marks(out of 240)" id="met">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Final Score</h5>
+                        <p class="final-score">0.00</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        document.querySelectorAll('.form-control').forEach(function (input) {
+            input.addEventListener('input', function () {
+                var maths = parseFloat(document.getElementById('maths').value) || 0;
+                var physics = parseFloat(document.getElementById('physics').value) || 0;
+                var chemistry = parseFloat(document.getElementById('chemistry').value) || 0;
+                var met = parseFloat(document.getElementById('met').value) || 0;
+
+                var average = (maths + physics + chemistry) / 3;
+                var metScore = (met / 240) * 50;
+
+                // Assign grades based on average score
+                var grade;
+                if (average >= 95) {
+                    grade = 10;
+                } else if (average >= 90) {
+                    grade = 9;
+                } else if (average >= 85) {
+                    grade = 8;
+                } else if (average >= 80) {
+                    grade = 7;
+                } else if (average >= 75) {
+                    grade = 6;
+                } else if (average >= 70) {
+                    grade = 5;
+                } else if (average >= 65) {
+                    grade = 4;
+                } else if (average >= 60) {
+                    grade = 3;
+                } else if (average >= 55) {
+                    grade = 2;
+                } else if (average >= 50) {
+                    grade = 1;
+                } else {
+                    grade = 0;
+                }
+
+                // Calculate final score
+                var finalScore = (grade / 10) * 50 + metScore;
+
+                // Update Final Score card
+                var finalScoreElement = document.querySelector('.final-score');
+                finalScoreElement.textContent = finalScore.toFixed(2);
+            });
+        });
+    </script>
+
+</body>
+
+</html>
