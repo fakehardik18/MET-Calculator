@@ -4,10 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MET calculator</title>
+    <title>MET Calculator</title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        .copy-btn {
+            background-color: #007bff;
+            color: #ffffff;
+            margin-top: 10px;
+        }
+
         /* Custom dark theme */
         body {
             background-color: #121212;
@@ -72,10 +78,28 @@
             color: #ffffff;
         }
 
-        .final-score {
+        .final-scoreOne {
             color: lightgreen;
             font-size: xx-large;
             font-family: monospace;
+        }
+
+        .final-scoreHalf {
+            color: lightgreen;
+            font-size: xx-large;
+            font-family: monospace;
+        }
+
+        .final-scoreRaw {
+            color: lightgreen;
+            font-size: xx-large;
+            font-family: monospace;
+        }
+
+        .score-divider {
+            border-bottom: 1px solid #ffffff;
+            padding-bottom: 5px;
+            margin-bottom: 5px;
         }
     </style>
 </head>
@@ -103,19 +127,19 @@
                         <h5 class="card-title">Board Marks</h5>
                         <div class="form-group">
                             <input type="number" class="form-control" placeholder="Maths" id="maths">
-                            <input type="number" class="form-control" placeholder="Maximum marks" id="totalMaths">
+                            <input type="number" class="form-control" placeholder="Total" id="totalMaths">
                         </div>
                         <div class="form-group">
                             <input type="number" class="form-control" placeholder="Physics" id="physics">
-                            <input type="number" class="form-control" placeholder="Maximum marks" id="totalPhysics">
+                            <input type="number" class="form-control" placeholder="Total" id="totalPhysics">
                         </div>
                         <div class="form-group">
-                            <input type="number" class="form-control" placeholder="Chemistry" id="chemistry">
-                            <input type="number" class="form-control" placeholder="Maximum marks" id="totalChemistry">
+                            <input type="number" class="form-control" placeholder="Chemistry/Optional" id="chemistry">
+                            <input type="number" class="form-control" placeholder="Total" id="totalChemistry">
                         </div>
                         <div class="form-group">
                             <input type="number" class="form-control" placeholder="English" id="english">
-                            <input type="number" class="form-control" placeholder="Maximum marks" id="totalEnglish">
+                            <input type="number" class="form-control" placeholder="Total" id="totalEnglish">
                         </div>
                     </div>
                 </div>
@@ -133,22 +157,14 @@
             <div class="col-md-3">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">Final Score</h5>
-                        <p class="final-score">0.00</p>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="optionRadio" id="optionA" value="A">
-                            <label class="form-check-label" for="optionA">
-                                Band System
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="optionRadio" id="optionB" value="B">
-                            <label class="form-check-label" for="optionB">
-                                50% System
-                            </label>
-                        </div>
-                        <p style="font-size: xx-small;color:lightblue">re-select options after changing values to get
-                            updated score</p>
+                        <h5 class="card-title ">One Band</h5>
+                        <p class="final-scoreOne score-divider">0.00</p>
+                        <h5 class="card-title">Half Band</h5>
+                        <p class="final-scoreHalf score-divider">0.00</p>
+                        <h5 class="card-title">Raw Avg</h5>
+                        <p class="final-scoreRaw score-divider">0.00</p>
+                        <button class="btn calculate-btn" id="submit-btn">Calculate</button>
+                        <button class="btn copy-btn" id="copy-btn">Copy Scores</button>
                     </div>
                 </div>
             </div>
@@ -161,63 +177,120 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script>
-        document.querySelectorAll('.form-control').forEach(function (input) {
-            input.addEventListener('input', function () {
-                var maths = parseFloat(document.getElementById('maths').value) || 0;
-                var totalMaths = parseFloat(document.getElementById('totalMaths').value) || 0;
-                var physics = parseFloat(document.getElementById('physics').value) || 0;
-                var totalPhysics = parseFloat(document.getElementById('totalPhysics').value) || 0;
-                var chemistry = parseFloat(document.getElementById('chemistry').value) || 0;
-                var totalChemistry = parseFloat(document.getElementById('totalChemistry').value) || 0;
-                var english = parseFloat(document.getElementById('english').value) || 0;
-                var totalEnglish = parseFloat(document.getElementById('totalEnglish').value) || 0;
-                var met = parseFloat(document.getElementById('met').value) || 0;
+        document.getElementById('submit-btn').addEventListener('click', function () {
+            var maths = parseFloat(document.getElementById('maths').value) || 0;
+            var totalMaths = parseFloat(document.getElementById('totalMaths').value) || 0;
+            var physics = parseFloat(document.getElementById('physics').value) || 0;
+            var totalPhysics = parseFloat(document.getElementById('totalPhysics').value) || 0;
+            var chemistry = parseFloat(document.getElementById('chemistry').value) || 0;
+            var totalChemistry = parseFloat(document.getElementById('totalChemistry').value) || 0;
+            var english = parseFloat(document.getElementById('english').value) || 0;
+            var totalEnglish = parseFloat(document.getElementById('totalEnglish').value) || 0;
+            var met = parseFloat(document.getElementById('met').value) || 0;
 
-                var total = totalMaths + totalPhysics + totalChemistry + totalEnglish
-                var average = (maths + physics + chemistry + english) / total
-                average = average * 100
-                var metScore = (met / 240) * 50;
+            var total = totalMaths + totalPhysics + totalChemistry + totalEnglish;
+            var average = ((maths + physics + chemistry + english) / total) * 100;
+            var metScore = (met / 240) * 50;
 
-                // Assign grades based on average score
-                var grade;
-                if (average >= 95) {
-                    grade = 10;
-                } else if (average >= 90) {
-                    grade = 9;
-                } else if (average >= 85) {
-                    grade = 8;
-                } else if (average >= 80) {
-                    grade = 7;
-                } else if (average >= 75) {
-                    grade = 6;
-                } else if (average >= 70) {
-                    grade = 5;
-                } else if (average >= 65) {
-                    grade = 4;
-                } else if (average >= 60) {
-                    grade = 3;
-                } else if (average >= 55) {
-                    grade = 2;
-                } else if (average >= 50) {
-                    grade = 1;
-                } else {
-                    grade = 0;
-                }
+            // Assign grades based on average score
+            var gradeOne;
+            if (average >= 95) {
+                gradeOne = 10;
+            } else if (average >= 90) {
+                gradeOne = 9;
+            } else if (average >= 85) {
+                gradeOne = 8;
+            } else if (average >= 80) {
+                gradeOne = 7;
+            } else if (average >= 75) {
+                gradeOne = 6;
+            } else if (average >= 70) {
+                gradeOne = 5;
+            } else if (average >= 65) {
+                gradeOne = 4;
+            } else if (average >= 60) {
+                gradeOne = 3;
+            } else if (average >= 55) {
+                gradeOne = 2;
+            } else if (average >= 50) {
+                gradeOne = 1;
+            } else {
+                gradeOne = 0;
+            }
 
-                document.querySelectorAll('.form-check-input').forEach(function (radio) {
-                    radio.addEventListener('change', function () {
-                        var finalScoreElement = document.querySelector('.final-score');
-                        if (this.value == 'A') {
-                            finalScoreElement.textContent = (grade / 10) * 50 + metScore;
-                        } else {
-                            finalScoreElement.textContent = average * 0.5 + metScore;
-                        }
-                    });
-                });
-            });
+            var gradeHalf;
+            if (average >= 95) {
+                gradeHalf = 10;
+            } else if (average >= 90) {
+                gradeHalf = 9.5;
+            } else if (average >= 85) {
+                gradeHalf = 9.0;
+            } else if (average >= 80) {
+                gradeHalf = 8.5;
+            } else if (average >= 75) {
+                gradeHalf = 8.0;
+            } else if (average >= 70) {
+                gradeHalf = 7.5;
+            } else if (average >= 65) {
+                gradeHalf = 7.0;
+            } else if (average >= 60) {
+                gradeHalf = 6.5;
+            } else if (average >= 55) {
+                gradeHalf = 6.0;
+            } else if (average >= 50) {
+                gradeHalf = 5.5;
+            } else if (average >= 45) {
+                gradeHalf = 5.0;
+            } else if (average >= 40) {
+                gradeHalf = 4.5;
+            } else if (average >= 35) {
+                gradeHalf = 4.0;
+            } else if (average >= 30) {
+                gradeHalf = 3.5;
+            } else if (average >= 25) {
+                gradeHalf = 3.0;
+            } else if (average >= 20) {
+                gradeHalf = 2.5;
+            } else if (average >= 15) {
+                gradeHalf = 2.0;
+            } else if (average >= 10) {
+                gradeHalf = 1.5;
+            } else if (average >= 5) {
+                gradeHalf = 1;
+            } else {
+                gradeHalf = 0;
+            }
+
+            document.querySelector('.final-scoreOne').textContent = (gradeOne / 10) * 50 + metScore;
+            document.querySelector('.final-scoreHalf').textContent = (gradeHalf / 10) * 50 + metScore;
+            document.querySelector('.final-scoreRaw').textContent = average * 0.5 + metScore;
         });
+        document.getElementById('copy-btn').addEventListener('click', function () {
+            var maths = parseFloat(document.getElementById('maths').value) || 0;
+            var totalMaths = parseFloat(document.getElementById('totalMaths').value) || 0;
+            var physics = parseFloat(document.getElementById('physics').value) || 0;
+            var totalPhysics = parseFloat(document.getElementById('totalPhysics').value) || 0;
+            var chemistry = parseFloat(document.getElementById('chemistry').value) || 0;
+            var totalChemistry = parseFloat(document.getElementById('totalChemistry').value) || 0;
+            var english = parseFloat(document.getElementById('english').value) || 0;
+            var totalEnglish = parseFloat(document.getElementById('totalEnglish').value) || 0;
+            var met = parseFloat(document.getElementById('met').value) || 0;
 
+            var total = totalMaths + totalPhysics + totalChemistry + totalEnglish;
+            var average = ((maths + physics + chemistry + english) / total) * 100;
+            var metScore = (met / 240) * 50;
+            var scoreOne = document.querySelector('.final-scoreOne').textContent;
+            var scoreHalf = document.querySelector('.final-scoreHalf').textContent;
+            var scoreRaw = document.querySelector('.final-scoreRaw').textContent;
 
+            var scoresText = `Boards: ${average}% | MET: ${met} | Band(1): ${scoreOne} | Band(0.5): ${scoreHalf} | Raw Average: ${scoreRaw}`;
+
+            navigator.clipboard.writeText(scoresText).then(function () {
+                alert('Scores copied to clipboard for you to share :)');
+            }, function (err) {
+                console.error('Could not copy text: ', err);
+            });
+        });        
     </script>
 
 </body>
